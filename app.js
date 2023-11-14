@@ -73,7 +73,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 9090;
+const PORT = 9090;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
