@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1rem;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      form {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 200px;
+        margin: auto auto;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+      form h3 { margin-bottom: 0px; }
+      form input[type="password"] {
+        padding: 5px;
+        border: 1px solid #efefef;
+        border-radius: 5px;
+        width: 100%;
+      }
+      form input[type="submit"] {
+        background-color: rgb(81, 81, 176);
+        border: 1px solid rgb(81, 81, 176);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+      #current p {
+        padding: 2px 15px;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
+        height: 10vh;
+        width: 100%;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8f8f8;
+      }
+      footer span {
+        cursor: pointer;
+        margin: 0 20px;
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="upload-form" enctype="multipart/form-data">
+      <h3>Second Harvest Delivery Helper</h3>
+      <aside class="hide">Uploading...</aside>
+      <input type="file" id="file-input" accept=".pdf" required />
+      <input
+        placeholder="file password"
+        type="password"
+        name="password"
+        required
+      />
+      <input type="submit" value="Upload PDF" />
+    </form>
+    <main class="hide" id="app"></main>
+    <footer class="hide"><span>&lt;</span><span>&gt;</span></footer>
+    <script type="text/javascript">
+      function populate(row) {
+        const name = row["First Name"];
+        const instructions = row["Delivery Instructions"] ?? '';
+        const { City: city, Language: language, Phone: phone, Street: address, Zip: zip } = row;
+        return `
+        <div id="current">
+          <h1>${index + 1}</h1>
+          <h2>${name} <small>(${language || "English"})</small></h2>
+          <a class="phone" href="tel:+1${phone}">${phone}</a><br /><br />
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            `${address} ${city}, ${zip}`
+          )}">${address}</a>
+          <p>${(instructions).replace(/["]{2,}/g, '"')}</p>
+        </div>
+      `;
+      }
+
+      const HIDE = "hide";
+      const form = document.getElementById("upload-form");
+      const fileInput = document.getElementById("file-input");
+      let index = 0;
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        form.querySelector("aside.hide").classList.remove(HIDE);
+        // Check if the file is a PDF
+        const file = fileInput.files[0];
+        if (file.type !== "application/pdf") {
+          alert("Please select a PDF file.");
+          return;
+        }
+
+        // Prepare FormData
+        const formData = new FormData();
+        formData.append(
+          "password",
+          form.querySelector('input[type="password"]').value
+        );
+        formData.append("file", file);
+
+        // Send the request
+        fetch("/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            form.classList.add(HIDE);
+            document.querySelector("footer").classList.remove(HIDE);
+            const app = document.querySelector("#app");
+            app.classList.remove(HIDE);
+            const spans = document.querySelectorAll("footer span");
+            spans[0].addEventListener("click", (e) => {
+              if (index > 0) {
+                index -= 1;
+              } else {
+                index = data.length - 1;
+              }
+              app.innerHTML = populate(data[index]);
+            });
+            spans[1].addEventListener("click", (e) => {
+              if (index < data.length - 1) {
+                index += 1;
+              } else {
+                index = 0;
+              }
+              app.innerHTML = populate(data[index]);
+            });
+
+            app.innerHTML = populate(data[index]);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
