@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const { PDFExtract } = require('pdf.js-extract');
@@ -26,7 +27,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const options = { password: req.body.password };
     const pdfBuffer = req.file.buffer;  // Get the Buffer of the uploaded file
-
     const pdfData = await pdfExtract.extractBuffer(pdfBuffer, options);
     const pages = pdfData.pages.map(({ content }) => content);
     const NEWLINE = '';
@@ -36,10 +36,11 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     let previousY = -1;
     let currentColumn = 0;
 
-    pages.forEach((page, pageIndex) => {
-      page.forEach((content) => {
+    for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+      const dataFrame = pages[pageIndex];
+      for (let row = 0; row < dataFrame.length; row++) {
         let currentRow = output.length - 1;
-        const { x, y, str } = content;
+        const { x, y, str } = dataFrame[row];
         // new row when empty string, cur x is less than last and cur y is greater than last
         const isNewRow = (str === NEWLINE && x < previousX && y > previousY);
         // new page when the pageIndex has incremented and previousX and previousY have been reset
@@ -50,20 +51,24 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         if (isNewPage || isNewRow) {
           output.push([]);
           currentColumn = 0;
-        } else if (isNewColumn) {
-          currentColumn++;
-        } else {
-          // concat content onto any existing content
-          output[currentRow][currentColumn] = `${(output[currentRow][currentColumn] || '')} ${str}`.trim();
+          continue;
         }
+
+        if (isNewColumn) {
+          currentColumn++;
+          continue;
+        }
+
+        // concat content onto any existing content
+        output[currentRow][currentColumn] = `${(output[currentRow][currentColumn] || '')} ${str}`.trim();
 
         previousX = x;
         previousY = y;
-      })
+      }
 
       previousX = -1;
       previousY = -1;
-    });
+    }
 
     const [headers, ...results] = output;
     res.json(results.map((value) => Object.fromEntries(headers.map((header, i) => [header, value[i] ?? '']))));
@@ -73,7 +78,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-const PORT = 9090;
-app.listen(PORT, 'localhost', () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, process.env.HOST, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
