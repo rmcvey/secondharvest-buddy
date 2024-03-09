@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Delivery</title>
+    <link rel="stylesheet" href="/main.css" type="text/css"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  </head>
+  <body>
+    <form id="upload-form" enctype="multipart/form-data">
+      <h3>Second Harvest Delivery Helper</h3>
+      <aside class="hide">Uploading...</aside>
+      <input type="file" id="file-input" accept=".pdf" required="required"/>
+      <input placeholder="file password" type="password" name="password" required="required"/>
+      <input type="submit" value="Upload PDF"/>
+    </form>
+    <main class="hide" id="app"></main>
+    <footer class="hide">
+      <span>&lsaquo;</span><span>&rsaquo;</span>
+    </footer>
+    <script type="module" src="/main.mjs"></script>
+  </body>
+</html>

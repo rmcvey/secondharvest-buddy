@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
+const { resolve } = require('path');
 const { PDFExtract } = require('pdf.js-extract');
 
 const app = express();
@@ -19,9 +20,12 @@ const upload = multer({
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+const indexPath = resolve(__dirname, '../public');
+app.use(express.static(indexPath));
+
+// app.get('/', (req, res) => {
+//   res.sendFile(indexPath);
+// });
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
@@ -59,7 +63,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
           continue;
         }
 
-        // concat content onto any existing content
+        // concat content onto any existing content and trim trailing or leading space
         output[currentRow][currentColumn] = `${(output[currentRow][currentColumn] || '')} ${str}`.trim();
 
         previousX = x;
@@ -70,8 +74,9 @@ app.post('/upload', upload.single('file'), async (req, res) => {
       previousY = -1;
     }
 
-    const [headers, ...results] = output;
-    res.json(results.map((value) => Object.fromEntries(headers.map((header, i) => [header, value[i] ?? '']))));
+    const [headers, ...rows] = output;
+    // map column indices to header keys
+    res.json(rows.map((value) => Object.fromEntries(headers.map((header, i) => [header, value[i] ?? '']))));
   } catch (error) {
     console.error(error);
     res.status(500).send('Error processing the PDF file');

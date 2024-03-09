@@ -10,6 +10,6 @@
     "pdf.js-extract": "^0.2.1"
   },
   "scripts": {
-    "dev": "ts-node two"
+    "dev": "nodemon --config ./.nodemon.json app/index.js"
   }
 }
