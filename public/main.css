@@ -83,6 +83,9 @@ sup {
 a {
   text-underline-offset: 5px;
 }
+.transparent {
+  opacity: 0;
+}
 .phone {
   border: 1px solid #efefef;
   padding: 10px 15px;
@@ -107,4 +110,27 @@ a {
 }
 .language {
   margin-left: 10px;
+}
+#camera {
+  margin: 0 auto;
+}
+#camera-launch {
+  cursor: pointer;
+  margin: 0 auto;
+  width: 50px;
+}
+#join {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  cursor: pointer;
+}
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 90vw;
+  height: 90vh;
 }

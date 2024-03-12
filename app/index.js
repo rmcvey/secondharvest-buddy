@@ -1,11 +1,22 @@
 require('dotenv').config();
 const express = require('express');
+const axios = require('axios');
+const http = require('http');
 const multer = require('multer');
 const { resolve } = require('path');
 const { PDFExtract } = require('pdf.js-extract');
+const qrcode = require('qrcode');
+const { Server } = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 const pdfExtract = new PDFExtract();
+const production = process.env.NODE_ENV === 'production';
+
+io.on('connection', (socket) => {
+  console.log('someone connected');
+});
 
 // Configure multer for memory storage, file filter, and size limit
 const upload = multer({
@@ -20,12 +31,9 @@ const upload = multer({
   }
 });
 
-const indexPath = resolve(__dirname, '../public');
+const dir = production ? '../dist' : '../public';
+const indexPath = resolve(__dirname, dir);
 app.use(express.static(indexPath));
-
-// app.get('/', (req, res) => {
-//   res.sendFile(indexPath);
-// });
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
@@ -83,6 +91,25 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, process.env.HOST, () => {
+app.get('/geo', async (req, res) => {
+  const [, search] = req.url.split('?');
+  const base = 'https://nominatim.openstreetmap.org';
+  const { data } = await axios.get(`${base}/search?format=geojson&${search}`);
+  const [first = { error: 'not found' }] = data.features;
+  res.json(first);
+});
+
+app.get('/join/:id', (req, res) => {
+  res.json({ joining: req.params.id });
+})
+
+app.get('/qr', async (req, res) => {
+  const session = 'foobar';
+  const url = `http://localhost:9090/join/${session}`;
+  const qr = await qrcode.toDataURL(url);
+  res.json({ qr });
+});
+
+server.listen(process.env.PORT, process.env.HOST, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
