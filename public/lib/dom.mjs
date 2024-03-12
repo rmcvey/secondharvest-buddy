@@ -7,7 +7,7 @@ export function on(elem, eventName, handler) {
     el = $(elem);
   }
   if (el) {
-    el.addEventListener(eventName, handler);
+    el.addEventListener(eventName, handler, false);
   }
 }
 
@@ -15,16 +15,18 @@ export function delegate(event = "click", parent, child, handler) {
   const p = $(parent);
   if (p) {
     on(p, event, (evt) => {
-      if (evt.target.id === child.startsWith("#") ? child.slice(1) : child) {
+      const c = $(child);
+      if (evt.target.matches(child) || c.contains(evt.target)) {
         return handler(evt);
       }
-      return true;
+      return false;
     });
   }
 }
 
 export function link(elem, href) {
-  on(elem, 'click', () => {
+  on(elem, 'click', (e) => {
     window.open(href);
+    e.preventDefault();
   })
 }

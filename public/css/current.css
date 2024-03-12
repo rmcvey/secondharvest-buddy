@@ -1,0 +1,16 @@
+#current {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#current p {
+  padding: 2px 15px;
+  font-size: 1.1rem;
+}
+
+#current a,
+#current a:visited {
+  color: blue;
+}
