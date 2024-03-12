@@ -11,6 +11,8 @@ import {
 import { $, delegate, on } from "./lib/dom.mjs";
 
 const HIDE = "hide";
+const MAP_BASE = 'https://www.google.com/maps/search';
+const TWO_HOURS = 60 * 60 * 2;
 
 const video = $("video");
 const canvas = $("canvas");
@@ -26,7 +28,7 @@ elem.id = "nav";
 document.body.appendChild(elem);
 
 // TODO: make webcomponent
-function populate(row) {
+function renderRow(row) {
   const name = row["First Name"];
   const instructions = row["Delivery Instructions"] ?? "";
   const {
@@ -45,7 +47,7 @@ function populate(row) {
     <div id="current">
       <h1>${index + 1} <sup> / ${curShift.length}</sup></h1>
       <h2>${name}</h2>
-      <a class="address" href="https://www.google.com/maps/search/?${searchParams}">${address} ${city}, ${zip}</a>
+      <a class="address" href="${MAP_BASE}/?${searchParams}">${address} ${city}, ${zip}</a>
       <div id="phone-lang">
         <a class="phone" href="tel:+1${phone}">${phoneIcon} ${phone}</a>
         <span class="language">${language || "English"}</span>
@@ -86,15 +88,15 @@ function launchCamera(event) {
     });
 }
 
-function open(url) {
-  return () => window.open(url);
-}
+const open = (url) => () => window.open(url);
 
 delegate("click", "#app", "#camera-icon", launchCamera);
 delegate("click", "#app", "#camera-snap", () => cam && cam.snap());
-delegate('click', '#app', '#gas', open('https://www.google.com/maps/search/closest+gas+station'));
-delegate('click', '#app', '#food-icon', open('https://www.google.com/maps/search/nearby+restaurants'));
-delegate('click', '#app', '#coffee', open('https://www.google.com/maps/search/nearby+coffee'));
+
+
+delegate('click', '#app', '#gas', open(`${MAP_BASE}/closest+gas+station`));
+delegate('click', '#app', '#food-icon', open(`${MAP_BASE}/nearby+restaurants`));
+delegate('click', '#app', '#coffee', open(`${MAP_BASE}/nearby+coffee`));
 
 const join = $("#join");
 
@@ -115,7 +117,7 @@ function main(data) {
     } else {
       index = 0;
     }
-    app.innerHTML = populate(data[index]);
+    app.innerHTML = renderRow(data[index]);
     socket.emit("page", index);
   });
 
@@ -125,11 +127,11 @@ function main(data) {
     } else {
       index = data.length - 1;
     }
-    app.innerHTML = populate(data[index]);
+    app.innerHTML = renderRow(data[index]);
     socket.emit("page", index);
   });
 
-  app.innerHTML = populate(data[index]);
+  app.innerHTML = renderRow(data[index]);
 }
 
 if (curShift) {
@@ -139,8 +141,6 @@ if (curShift) {
 if (Storage.get("password")) {
   password.value = Storage.get("password");
 }
-
-const twoHoursInSeconds = 60 * 60 * 2;
 
 on(form, "submit", function (event) {
   event.preventDefault();
@@ -153,8 +153,7 @@ on(form, "submit", function (event) {
   }
 
   if (password) {
-    Storage.set("password", password.value, twoHoursInSeconds);
-    // window.sessionStorage.setItem('password', password.value);
+    Storage.set("password", password.value, TWO_HOURS);
   }
 
   // Prepare FormData
@@ -170,7 +169,7 @@ on(form, "submit", function (event) {
     .then((response) => response.json())
     .then((data) => {
       curShift = data;
-      Storage.set("shift", data, twoHoursInSeconds);
+      Storage.set("shift", data, TWO_HOURS);
       main(data);
     })
     .catch((error) => {

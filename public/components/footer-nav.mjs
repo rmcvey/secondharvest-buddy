@@ -1,7 +1,9 @@
+import { chevronLeft, chevronRight } from "../lib/images.mjs";
+
 const template = /* html */`
   <footer class="hide">
-    <span id="left">&lsaquo;</span>
-    <span id="right">&rsaquo;</span>
+    <span id="left">${chevronLeft}</span>
+    <span id="right">${chevronRight}</span>
   </footer>
 `;
 
@@ -26,6 +28,7 @@ const styles = /* css */`
   :host span {
     cursor: pointer;
     margin: 0 20px;
+    width: 50px;
   }
   :host([hidden]) {
     display: none;
@@ -44,14 +47,19 @@ export default class FooterNav extends HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.classList.add('wrapper');
     wrapper.innerHTML = template;
+
+    const left = wrapper.querySelector('#left');
+    const right = wrapper.querySelector('#right');
+
     wrapper.addEventListener('click', (e) => {
       const { id } = e.target;
-      if (id === 'left') {
+      if (id === 'left' || left.contains(e.target)) {
         this.dispatchEvent(new CustomEvent('prev-page'));
-      } else if (id === 'right') {
+      } else if (id === 'right' || right.contains(e.target)) {
         this.dispatchEvent(new CustomEvent('next-page'));
       }
     });
+
     shadow.appendChild(wrapper);
   }
 }

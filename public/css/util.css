@@ -1,0 +1,32 @@
+.m-0 {
+  margin: 0 auto;
+}
+
+.icon {
+  width: 50px;
+}
+
+.click:hover {
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.opaque {
+  opacity: 1;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 90vw;
+  height: 90vh;
+}
