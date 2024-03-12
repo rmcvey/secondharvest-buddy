@@ -7,6 +7,7 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+
 main {
   flex-grow: 0.5;
   display: flex;
@@ -15,6 +16,7 @@ main {
   justify-content: center;
   text-align: center;
 }
+
 form {
   box-sizing: border-box;
   display: flex;
@@ -25,15 +27,18 @@ form {
   align-items: baseline;
   justify-content: space-between;
 }
+
 form h3 {
   margin-bottom: 0;
 }
+
 form input[type="password"] {
   padding: 5px;
   border: 1px solid #efefef;
   border-radius: 5px;
   width: 100%;
 }
+
 form input[type="submit"] {
   background-color: rgb(81, 81, 176);
   border: 1px solid rgb(81, 81, 176);
@@ -41,17 +46,28 @@ form input[type="submit"] {
   padding: 5px 10px;
   border-radius: 5px;
 }
+
+#current {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
 #current p {
   padding: 2px 15px;
   font-size: 1.1rem;
 }
+
 #current a,
 #current a:visited {
   color: blue;
 }
+
 .address {
   font-size: 1.5rem;
 }
+
 footer {
   position: fixed;
   bottom: 0;
@@ -66,26 +82,33 @@ footer {
   justify-content: space-between;
   background: #f8f8f8;
 }
+
 h2 {
   font-size: 3rem;
   font-weight: 100;
 }
+
 footer span {
   cursor: pointer;
   margin: 0 20px;
 }
+
 sup {
   font-size: 1rem;
 }
+
 .hide {
   display: none;
 }
+
 a {
   text-underline-offset: 5px;
 }
+
 .transparent {
   opacity: 0;
 }
+
 .phone {
   border: 1px solid #efefef;
   padding: 10px 15px;
@@ -100,25 +123,49 @@ a {
   box-shadow: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
   box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px, rgba(0, 0, 0, 0.24) 0 1px 2px;
 }
+
 .phone svg {
   margin-right: 5px;
 }
+
 #phone-lang {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100px;
 }
+
 .language {
   margin-left: 10px;
 }
-#camera {
+
+.m-0 {
   margin: 0 auto;
 }
+
+.icon {
+  width: 50px;
+}
+
+.click:hover {
+  cursor: pointer;
+}
+
+#quickhelp {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 75px;
+  width: 30vw;
+}
+
 #camera-launch {
   cursor: pointer;
   margin: 0 auto;
   width: 50px;
 }
+
 #join {
   position: fixed;
   top: 10px;
@@ -126,6 +173,7 @@ a {
   width: 40px;
   cursor: pointer;
 }
+
 .modal {
   position: absolute;
   top: 0;
