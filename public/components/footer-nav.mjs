@@ -11,7 +11,7 @@ export default class FooterNav extends Component {
         bottom: 0;
         left: 0;
         right: 0;
-        height: 11vh;
+        height: 12vh;
         width: 100%;
       }
       :host footer {
