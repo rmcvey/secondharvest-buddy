@@ -1,4 +1,5 @@
 import { chevronLeft, chevronRight } from "../lib/images.mjs";
+import { isElemOrChild } from '../lib/dom.mjs';
 
 const template = /* html */`
   <footer class="hide">

@@ -1,4 +1,8 @@
-import CameraModel from "./CameraModel.mjs";
+/**
+ * https://github.com/farhadnowzari/easy-js-camera/tree/main
+ * @farhadnowzari, @DannyFeliz ISC
+ */
+import CameraModel from "./camera-model.mjs";
 export class Constraints {
   constructor() {
     this.video = {

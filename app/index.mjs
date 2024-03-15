@@ -1,12 +1,18 @@
-require('dotenv').config();
-const express = require('express');
-const axios = require('axios');
-const http = require('http');
-const multer = require('multer');
-const { resolve } = require('path');
-const { PDFExtract } = require('pdf.js-extract');
-const qrcode = require('qrcode');
-const { Server } = require('socket.io');
+import { config } from 'dotenv';
+import express from 'express';
+import axios from 'axios';
+import http from 'http';
+import multer from 'multer';
+import { PDFExtract } from 'pdf.js-extract';
+import qrcode from 'qrcode';
+import { Server } from 'socket.io';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+config();
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +38,7 @@ const upload = multer({
 });
 
 const dir = production ? '../dist' : '../public';
-const indexPath = resolve(__dirname, dir);
+const indexPath = path.resolve(__dirname, dir);
 app.use(express.static(indexPath));
 
 app.post('/upload', upload.single('file'), async (req, res) => {
@@ -43,24 +49,40 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const pages = pdfData.pages.map(({ content }) => content);
     const NEWLINE = '';
     const output = [[]];
+    const WIGGLE_ROOM = 5;
 
-    let previousX = -1;
-    let previousY = -1;
-    let currentColumn = 0;
-
+    // iterate over pdf pages
     for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+      let currentColumn = 0;
       const dataFrame = pages[pageIndex];
-      for (let row = 0; row < dataFrame.length; row++) {
-        let currentRow = output.length - 1;
-        const { x, y, str } = dataFrame[row];
-        // new row when empty string, cur x is less than last and cur y is greater than last
-        const isNewRow = (str === NEWLINE && x < previousX && y > previousY);
-        // new page when the pageIndex has incremented and previousX and previousY have been reset
-        const isNewPage = (pageIndex > 0 && previousX === -1 && previousY === -1);
-        // new column when empty or blank space and x is greater than previous
-        const isNewColumn = (str.trim() === NEWLINE && x > previousX);
 
-        if (isNewPage || isNewRow) {
+      let texas = new Set();
+      // page content, early break
+      for (let i = 0; i < dataFrame.length; i++) {
+        const { x, str } = dataFrame[i];
+        const { x: prevX } = (dataFrame[i - 1] ?? { x: -Infinity, y: Infinity });
+        if (x >= prevX) {
+          if (str.trim()) {
+            texas.add(x)
+          }
+        } else {
+          break;
+        }
+      }
+
+      texas = [...texas];
+      // page content
+      for (let row = 0; row < dataFrame.length; row++) {
+        const currentRow = output.length - 1;
+        const targetX = texas[currentColumn];
+        const { x, y, str } = dataFrame[row];
+        const { x: prevX, y: prevY } = (dataFrame[row - 1] ?? { x: -Infinity, y: Infinity });
+        const isNewColumn = (str.trim() === NEWLINE && x > prevX);
+        const isNewRow = (x < prevX && y > prevY);
+        const isNewPage = (pageIndex > 0 && prevX === -Infinity && prevY === Infinity);
+
+        // first column reset
+        if (isNewRow || isNewPage) {
           output.push([]);
           currentColumn = 0;
           continue;
@@ -71,15 +93,14 @@ app.post('/upload', upload.single('file'), async (req, res) => {
           continue;
         }
 
-        // concat content onto any existing content and trim trailing or leading space
+        // column miss, fill in the blank
+        if (Math.abs(targetX - x) > WIGGLE_ROOM) {
+          output[currentRow].push('');
+          currentColumn++;
+        }
+
         output[currentRow][currentColumn] = `${(output[currentRow][currentColumn] || '')} ${str}`.trim();
-
-        previousX = x;
-        previousY = y;
       }
-
-      previousX = -1;
-      previousY = -1;
     }
 
     const [headers, ...rows] = output;
@@ -101,7 +122,7 @@ app.get('/geo', async (req, res) => {
 
 app.get('/join/:id', (req, res) => {
   res.json({ joining: req.params.id });
-})
+});
 
 app.get('/qr', async (req, res) => {
   const session = 'foobar';

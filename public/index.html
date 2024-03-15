@@ -8,7 +8,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./icon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./icon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./icon/favicon-16x16.png">
-    <script type="module" src="./components/footer-nav.mjs"></script>
+    <link rel="manifest" href="manifest.json"/>
+    <script type="module" src="./components/index.mjs"></script>
   </head>
   <body>
     <form id="upload-form" enctype="multipart/form-data">
@@ -18,6 +19,7 @@
       <input placeholder="file password" type="password" name="password" required="required"/>
       <input type="submit" value="Upload PDF"/>
     </form>
+    <task-progression current="0" count="0" id="top-progress"></task-progression>
     <svg class="w-6 h-6 text-gray-800 dark:text-white hide" id="join" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewbox="0 0 24 24">
       <path d="M8 3a3 3 0 0 0-1 5.8v6.4a3 3 0 1 0 2 0V15c0-1.1.9-2 2-2h1a5 5 0 0 0 5-4.1 3 3 0 1 0-2.1-.1A3 3 0 0 1 12 11h-1a4 4 0 0 0-2 .5V8.8A3 3 0 0 0 8 3Z"/>
     </svg>
