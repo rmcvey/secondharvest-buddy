@@ -1,0 +1,8 @@
+{
+  "apps": [{
+    "name": "second-harvest-delivery",
+    "cwd": "/var/www/secondharvest-buddy",
+    "script": "npm",
+    "args": "start"
+  }]
+}
