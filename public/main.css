@@ -6,8 +6,13 @@
 
 #join {
   position: fixed;
-  top: 10px;
+  top: 3svh;
   right: 10px;
   width: 40px;
   cursor: pointer;
+}
+
+main#app {
+  /* height: 56vh; */
+  overflow: hidden;
 }

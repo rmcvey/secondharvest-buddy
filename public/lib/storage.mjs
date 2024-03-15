@@ -23,7 +23,7 @@ export default class Storage {
       data: value,
     };
     if (ttlSeconds) {
-      const expires = ttlSeconds * 1000 * 60;
+      const expires = ttlSeconds * 1000;
       datum.ttl = Date.now() + expires;
     }
     localStorage.setItem(key, JSON.stringify(datum));

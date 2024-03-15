@@ -19,6 +19,8 @@
 
 .phone svg {
   margin-right: 5px;
+  width: 20px;
+  height: auto;
 }
 
 #phone-lang {
@@ -35,10 +37,11 @@
 #quickhelp {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
-  height: 75px;
-  width: 30vw;
+  height: 60px;
+  width: 50vw;
+  margin-bottom: 20px;
 }
 
 #camera-launch {
