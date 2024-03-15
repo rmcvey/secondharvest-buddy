@@ -118,7 +118,7 @@ function main(data) {
   }
 
   on(join, 'click', async () => {
-    const response = await fetch("/api/qr").then((res) => res.json());
+    const response = await fetch("/qr").then((res) => res.json());
     $("#qrcode").src = response.qr;
     $(".modal").classList.remove("hide");
   });
@@ -178,7 +178,7 @@ on(form, "submit", function (event) {
   formData.append("file", file);
 
   // Send the request
-  fetch("/api/upload", {
+  fetch("/upload", {
     method: "POST",
     body: formData,
   })
