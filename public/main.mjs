@@ -29,6 +29,31 @@ footerMenu.id = "nav";
 
 document.body.appendChild(footerMenu);
 
+const languages = {
+  spanish: 'es',
+  vietnamese: 'vi',
+  english: 'en',
+  chinese: 'zh-CN',
+}
+// todo allow selection
+const params = new URLSearchParams({
+  hl: 'en',
+  sl: 'en',
+  text: 'Food bank',
+  op: 'translate',
+});
+
+const translateLink = 'https://translate.google.com';
+
+function guessLang(lang) {
+  for (const [language, short] of Object.entries(languages)) {
+    if (lang.toLowerCase().includes(language)) {
+      return short;
+    }
+  }
+  return 'es';
+}
+
 // TODO: make webcomponent
 function renderRow(row) {
   const name = row["First Name"];
@@ -46,6 +71,9 @@ function renderRow(row) {
     query: `${address} ${city}, ${zip}`,
   });
 
+  const lang = guessLang(language);
+  params.set('tl', lang);
+
   return /* html */ `
     <div id="current">
       <h1>${index + 1} <sup> / ${curShift.length}</sup></h1>
@@ -53,7 +81,7 @@ function renderRow(row) {
       <a class="address" href="${MAP_BASE}/?${searchParams}">${address}</a>
       <div id="phone-lang">
         <a class="phone" href="tel:+1${phone}">${phoneIcon}${phone}</a>
-        <span class="language">${language || "English"}</span>
+        <a class="language" target="_blank" href="${translateLink}?${params}">${language || "English"}</a>
       </div>
       <p id="instructions">${instructions.replace(/["]{2,}/g, '"')}</p>
       <div id="quickhelp">
