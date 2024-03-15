@@ -17,17 +17,13 @@ const TWO_HOURS = 60 * 60 * 2;
 
 const video = $("video");
 const canvas = $("canvas");
+const footerMenu = $('#nav');
 const form = $("#upload-form");
 const tprog = $('#top-progress');
 const password = $('input[type="password"]', form);
 const fileInput = $("#file-input");
 const app = $("#app");
 let curShift = Storage.get("shift");
-
-const footerMenu = document.createElement("footer-nav");
-footerMenu.id = "nav";
-
-document.body.appendChild(footerMenu);
 
 const languages = {
   spanish: 'es',

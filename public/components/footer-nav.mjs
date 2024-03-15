@@ -1,15 +1,17 @@
 import { chevronLeft, chevronRight } from "../lib/images.mjs";
 import Component from "../lib/component.mjs";
+import { css } from '../lib/dom.mjs';
 import { html } from "../lib/tag/htl.mjs";
 
 export default class FooterNav extends Component {
   styles() {
-    return /* css */`
+    return /* css */css`
       :host {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
+        height: 11vh;
         width: 100%;
       }
       :host footer {
