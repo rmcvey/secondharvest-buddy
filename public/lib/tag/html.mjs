@@ -10,10 +10,7 @@ const html = (strings, ...keys) => {
       if (isFunc(keys[i])) {
         if (string.includes('onClick=')) {
           handlerMap[count] = keys[i];
-          // const start = string.indexOf('onclick');
-          console.log(string.match(/(onClick="?(.*)["\s]+)/))
           acc[acc.length - 1] = string.replace(/(onClick="?(.*)["\s]+)/, `" data-call-id="${count}"`);
-          console.log(acc[acc.length - 1])
           count++;
         }
       } else if (isArray(keys[i]) || isObject(keys[i])) {

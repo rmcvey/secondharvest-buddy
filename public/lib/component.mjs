@@ -1,4 +1,3 @@
-import fetchPlus from './fetch-plus.mjs';
 import { css } from '../lib/dom.mjs';
 import { isEmpty, isFunc, isObject } from '../lib/is.mjs';
 
@@ -21,10 +20,6 @@ export default class Component extends HTMLElement {
     for (const attr of this.attributes) {
       this.#props[attr.name] = saferParse(attr.value);
     }
-  }
-
-  #setStyles(styles) {
-
   }
 
   styles() {
@@ -52,7 +47,6 @@ export default class Component extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
     // turn attributes into parsed props
     this.#prepareProps();
-    console.log(this.styles)
     let styles = this.styles(this.#props);
     if (!isEmpty(styles) && typeof styles === 'string') {
       styles = css`${styles}`;
