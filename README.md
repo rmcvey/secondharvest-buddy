@@ -16,7 +16,7 @@ When you receive your delivery itenerary via email:
 > Be sure to pay attention to the road while driving! We've found it useful to queue up the next client (directions, phone call) before departing.
 
 > [!NOTE]
-> The server processes the PDF in memory and does not store the file or the data contained within it. Ideally this would all take place client-side but I've been striking out on getting this working so far - 
+> The server [processes the PDF in memory](https://github.com/rmcvey/secondharvest-buddy/blob/main/app/index.mjs#L23-L25) and does not store the file or the data contained within it. Ideally this would all take place client-side but I've been striking out on getting this working so far - 
 contributions welcomed!
 
 > [!NOTE]
