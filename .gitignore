@@ -1,9 +1,9 @@
 node_modules/
 *.pdf
-2legit.js
 dist/
 .cache/
 .parcel-cache/
 .env
 yarn-error.log
 .DS_Store
+haters
