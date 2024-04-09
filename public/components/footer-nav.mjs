@@ -4,6 +4,7 @@ import { css } from '../lib/dom.mjs';
 import { html } from "../lib/tag/htl.mjs";
 
 export default class FooterNav extends Component {
+  static tagName = 'footer-nav';
   styles() {
     return /* css */css`
       :host {

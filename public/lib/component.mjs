@@ -22,25 +22,12 @@ export default class Component extends HTMLElement {
     }
   }
 
-  styles() {
-    return css``;
+  static get observedAttributes() {
+    return this.watch;
   }
 
-  setState(nextState, postUpdate) {
-    if (isFunc(nextState)) {
-      this.state = nextState(this.state);
-    } else if (isObject(nextState)) {
-      this.state = { ...this.state, ...nextState };
-    } else {
-      throw new Error('Invalid state supplied');
-    }
-
-    if (isFunc(postUpdate)) {
-      postUpdate();
-    }
-
-    // trigger re-render
-    this.attributeChangedCallback('state', this.state, nextState);
+  styles() {
+    return css``;
   }
 
   async connectedCallback() {
@@ -77,36 +64,5 @@ export default class Component extends HTMLElement {
       const html = this.render(this.#props);
       this.shadowRoot.replaceChildren(html);
     }
-  }
-}
-
-const memoize = (fn) => {
-  const cache = new Map();
-  return (...args) => {
-    const key = JSON.stringify(args);
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    const result = fn(...args);
-    cache.set(key, result);
-    return result;
-  };
-};
-
-export const useState = memoize((initalValue) => {
-  let value = initalValue;
-
-  return [
-    value,
-    (nextValue) => {
-      value = nextValue;
-    }
-  ]
-});
-
-
-export const register = (cls) => {
-  if (!customElements.get(cls)) {
-    customElements.define(cls.tagName, cls);
   }
 }

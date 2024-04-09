@@ -1,18 +1,7 @@
-@import './css/tags.css';
-@import './css/current.css';
-@import './css/upload-form.css';
-@import './css/util.css';
-@import './css/client-detail.css';
-
-#join {
-  position: fixed;
-  top: 3svh;
-  right: 10px;
-  width: 40px;
-  cursor: pointer;
-}
+@import "./css/tags.css";
+@import "./css/upload-form.css";
+@import "./css/util.css";
 
 main#app {
-  /* height: 56vh; */
   overflow: hidden;
 }
